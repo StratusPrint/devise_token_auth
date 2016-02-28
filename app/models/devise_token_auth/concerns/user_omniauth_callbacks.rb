@@ -3,8 +3,8 @@ module DeviseTokenAuth::Concerns::UserOmniauthCallbacks
 
   included do
     validates :email, presence: true, email: true, if: Proc.new { |u| u.provider == 'email' }
-    validates :api_token, presence: true, api_token: true, if: Proc.new { |u| u.provider == 'api_token' }
-    validates_presence_of :uid, if: :is_token_or_email?
+    validates :api_token, presence: true, if: Proc.new { |u| u.provider == 'api_token' }
+    validates_presence_of :uid, if: :not_token_or_email?
 
     # only validate unique emails and api tokens
     validate :unique_token_or_email, on: :create
@@ -16,7 +16,7 @@ module DeviseTokenAuth::Concerns::UserOmniauthCallbacks
 
   protected
 
-  def is_token_or_email?
+  def not_token_or_email?
     provider != 'email' && provider != 'api_token'
   end
 

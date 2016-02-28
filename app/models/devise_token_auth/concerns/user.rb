@@ -57,12 +57,12 @@ module DeviseTokenAuth::Concerns::User
     end
 
     def password_required?
-      return super unless self.provider == "api"
+      return super unless self.provider == "api_token"
       false
     end
 
     def password_changed?
-      return super unless self.provider == "api"
+      return super unless self.provider == "api_token"
       false
     end
 
