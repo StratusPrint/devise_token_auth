@@ -3,7 +3,6 @@ module DeviseTokenAuth::Concerns::UserOmniauthCallbacks
 
   included do
     validates :email, presence: true, email: true, if: Proc.new { |u| u.provider == 'email' }
-    validates :api_token, presence: true, if: Proc.new { |u| u.provider == 'api_token' }
     validates_presence_of :uid, if: :not_token_or_email?
 
     # only validate unique emails and api tokens
@@ -11,6 +10,9 @@ module DeviseTokenAuth::Concerns::UserOmniauthCallbacks
 
     # keep uid in sync with email or api_token
     before_save :sync_uid
+
+    # Generate API token
+    before_create :gen_api_token, if: Proc.new { |u| u.provider == 'api_token' }
     before_create :sync_uid
   end
 
@@ -31,5 +33,11 @@ module DeviseTokenAuth::Concerns::UserOmniauthCallbacks
   def sync_uid
     self.uid = email if provider == 'email'
     self.uid = api_token if provider == 'api_token'
+  end
+
+  def gen_api_token
+    begin
+      self.api_token = SecureRandom.hex
+    end while self.class.exists?(api_token: api_token)
   end
 end
