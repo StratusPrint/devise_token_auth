@@ -32,7 +32,7 @@ module DeviseTokenAuth::Concerns::UserOmniauthCallbacks
 
   def sync_uid
     self.uid = email if provider == 'email'
-    self.uid = api_token if provider == 'api_token'
+    self.uid = friendly_id if provider == 'api_token'
   end
 
   def gen_api_token

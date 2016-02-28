@@ -41,6 +41,7 @@ class DeviseTokenAuthCreate<%= user_class.pluralize %> < ActiveRecord::Migration
 
       ## TokenAuthenticatable
       t.string   :api_token
+      t.string   :friendly_id
 
       ## Tokens
       <%= json_supported_database? ? 't.json :tokens' : 't.text :tokens' %>
@@ -48,6 +49,7 @@ class DeviseTokenAuthCreate<%= user_class.pluralize %> < ActiveRecord::Migration
       t.timestamps
     end
 
+    add_index :<%= user_class.pluralize.underscore %>, :friendly_id, :unique => true
     add_index :<%= user_class.pluralize.underscore %>, :email
     add_index :<%= user_class.pluralize.underscore %>, [:uid, :provider],     :unique => true
     add_index :<%= user_class.pluralize.underscore %>, :reset_password_token, :unique => true
