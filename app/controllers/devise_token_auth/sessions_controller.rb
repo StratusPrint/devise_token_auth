@@ -11,6 +11,7 @@ module DeviseTokenAuth
     def create
       # Check
       field = (resource_params.keys.map(&:to_sym) & resource_class.authentication_keys).first
+      api_token = request_authentication_header_value
 
       @resource = nil
       if field
@@ -27,9 +28,10 @@ module DeviseTokenAuth
         end
 
         @resource = resource_class.where(q, q_value).first
+      elsif api_token
+        @resource = resource_class.where(api_token: api_token).first
       end
-
-      if @resource and valid_params?(field, q_value) and @resource.valid_password?(resource_params[:password]) and (!@resource.respond_to?(:active_for_authentication?) or @resource.active_for_authentication?)
+      if api_token_or_username_password_valid?(api_token, field, q_value) and (!@resource.respond_to?(:active_for_authentication?) or @resource.active_for_authentication?)
         # create client id
         @client_id = SecureRandom.urlsafe_base64(nil, false)
         @token     = SecureRandom.urlsafe_base64(nil, false)
@@ -98,6 +100,14 @@ module DeviseTokenAuth
         key: auth_key,
         val: auth_val
       }
+    end
+
+    def request_authentication_header_value
+      request.headers[DeviseTokenAuth.default_authentication_header]
+    end
+
+    def api_token_or_username_password_valid?(api_token, field, q_value)
+      ((@resource and api_token) or (@resource and valid_params?(field, q_value) and @resource.valid_password?(resource_params[:password])))
     end
 
     def render_new_error

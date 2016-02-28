@@ -18,7 +18,7 @@ module DeviseTokenAuth::Concerns::User
     # Hack to check if devise is already enabled
     unless self.method_defined?(:devise_modules)
       devise :database_authenticatable, :registerable,
-          :recoverable, :trackable, :validatable, :confirmable
+        :recoverable, :trackable, :validatable, :confirmable
     else
       self.devise_modules.delete(:omniauthable)
     end
@@ -53,6 +53,16 @@ module DeviseTokenAuth::Concerns::User
     end
 
     def email_changed?
+      false
+    end
+
+    def password_required?
+      return super unless self.provider == "api"
+      false
+    end
+
+    def password_changed?
+      return super unless self.provider == "api"
       false
     end
 
@@ -190,7 +200,7 @@ module DeviseTokenAuth::Concerns::User
 
   def build_auth_header(token, client_id='default')
     client_id ||= 'default'
-    
+
     if !DeviseTokenAuth.change_headers_on_each_request && self.tokens[client_id].nil?
       create_new_auth_token(client_id)
     else
@@ -198,7 +208,7 @@ module DeviseTokenAuth::Concerns::User
       # client may use expiry to prevent validation request if expired
       # must be cast as string or headers will break
       expiry = self.tokens[client_id]['expiry'] || self.tokens[client_id][:expiry]
-  
+
       return {
         "access-token" => token,
         "token-type"   => "Bearer",
@@ -231,7 +241,7 @@ module DeviseTokenAuth::Concerns::User
 
   def token_validation_response
     self.as_json(except: [
-      :tokens, :created_at, :updated_at
+                   :tokens, :created_at, :updated_at
     ])
   end
 
@@ -254,7 +264,7 @@ module DeviseTokenAuth::Concerns::User
   def remove_tokens_after_password_reset
     there_is_more_than_one_token = self.tokens && self.tokens.keys.length > 1
     should_remove_old_tokens = DeviseTokenAuth.remove_tokens_after_password_reset &&
-                               encrypted_password_changed? && there_is_more_than_one_token
+      encrypted_password_changed? && there_is_more_than_one_token
 
     if should_remove_old_tokens
       latest_token = self.tokens.max_by { |cid, v| v[:expiry] || v["expiry"] }

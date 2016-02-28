@@ -10,17 +10,18 @@ module DeviseTokenAuth
   end
 
   mattr_accessor :change_headers_on_each_request,
-                 :max_number_of_devices,
-                 :token_lifespan,
-                 :batch_request_buffer_throttle,
-                 :omniauth_prefix,
-                 :default_confirm_success_url,
-                 :default_password_reset_url,
-                 :redirect_whitelist,
-                 :check_current_password_before_update,
-                 :enable_standard_devise_support,
-                 :remove_tokens_after_password_reset,
-                 :default_callbacks
+    :max_number_of_devices,
+    :token_lifespan,
+    :batch_request_buffer_throttle,
+    :omniauth_prefix,
+    :default_confirm_success_url,
+    :default_password_reset_url,
+    :redirect_whitelist,
+    :check_current_password_before_update,
+    :default_authentication_header,
+    :enable_standard_devise_support,
+    :remove_tokens_after_password_reset,
+    :default_callbacks
 
   self.change_headers_on_each_request       = true
   self.max_number_of_devices                = 10
@@ -34,6 +35,7 @@ module DeviseTokenAuth
   self.enable_standard_devise_support       = false
   self.remove_tokens_after_password_reset   = false
   self.default_callbacks                    = true
+  self.default_authentication_header        = 'Authorization'
 
   def self.setup(&block)
     yield self
