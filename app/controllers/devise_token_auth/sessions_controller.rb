@@ -113,7 +113,7 @@ module DeviseTokenAuth
     end
 
     def username_password_valid?(field, q_value)
-      (@resource and valid_params?(field, q_value) and @resource.valid_password?(resource_params[:password])))
+      (@resource and valid_params?(field, q_value) and @resource.valid_password?(resource_params[:password]))
     end
 
     def render_new_error
