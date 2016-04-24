@@ -75,6 +75,7 @@ module DeviseTokenAuth::Concerns::User
       token = SecureRandom.hex
       encrypted_token = encrypt_api_token(token)
       self.api_token = encrypted_token
+      self.tokens = {}
       self.save!
       return token
     end
