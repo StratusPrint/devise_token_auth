@@ -80,7 +80,8 @@ module DeviseTokenAuth::Concerns::User
     end
 
     def valid_api_token?(api_token)
-      Devise::Encryptor.compare(self.class, self.api_token, api_token)
+      key = "#{token_hash}/#{token}"
+      result = (::BCrypt::Password.new(self.api_token) == api_token)
     end
 
     # override devise method to include additional info as opts hash
