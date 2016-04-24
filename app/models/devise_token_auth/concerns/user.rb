@@ -66,6 +66,24 @@ module DeviseTokenAuth::Concerns::User
       false
     end
 
+    # api token
+    def encrypt_api_token(api_token)
+      salt = BCrypt::Engine.generate_salt
+      hash = BCrypt::Engine.hash_secret(api_token, salt)
+    end
+
+    def generate_api_token
+      token = SecureRandom.hex
+      encrypt_api_token(token)
+      self.api_token = token
+      self.save!
+      return token
+    end
+
+    def valid_api_token?(api_token)
+      Devise::Encryptor.compare(self.api_token, encrypted_password, password)
+    end
+
     # override devise method to include additional info as opts hash
     def send_confirmation_instructions(opts=nil)
       unless @raw_confirmation_token

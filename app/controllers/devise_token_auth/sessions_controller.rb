@@ -107,7 +107,7 @@ module DeviseTokenAuth
     end
 
     def api_token_or_username_password_valid?(api_token, field, q_value)
-      ((@resource and api_token) or (@resource and valid_params?(field, q_value) and @resource.valid_password?(resource_params[:password])))
+      ((@resource.valid_api_token?(api_token)) or (@resource and valid_params?(field, q_value) and @resource.valid_password?(resource_params[:password])))
     end
 
     def render_new_error
