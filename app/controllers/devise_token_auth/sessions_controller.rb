@@ -31,11 +31,10 @@ module DeviseTokenAuth
         @resource = resource_class.where(q, q_value).first
       elsif api_token
         resource_class.find_each do |resource|
-          if resource.valid_api_token(api_token)
+          if resource.valid_api_token?(api_token)
             @resource = resource
             api_token_valid = true
           end
-
         end
       end
       if api_token_valid or username_password_valid?(field, q_value) and (!@resource.respond_to?(:active_for_authentication?) or @resource.active_for_authentication?)
