@@ -30,7 +30,7 @@ module DeviseTokenAuth
 
         @resource = resource_class.where(q, q_value).first
       elsif api_token
-        resource_class.find_each do |resource|
+        resource_class.all.each do |resource|
           if resource.valid_api_token?(api_token)
             @resource = resource
             api_token_valid = true
