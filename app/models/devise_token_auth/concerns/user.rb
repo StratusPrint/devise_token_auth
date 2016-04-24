@@ -68,8 +68,7 @@ module DeviseTokenAuth::Concerns::User
 
     # api token
     def encrypt_api_token(api_token)
-      salt = BCrypt::Engine.generate_salt
-      hash = BCrypt::Engine.hash_secret(api_token, salt)
+      api_token_hash = ::BCrypt::Password.create(api_token)
     end
 
     def generate_api_token
