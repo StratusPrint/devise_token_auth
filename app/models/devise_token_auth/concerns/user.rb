@@ -74,14 +74,14 @@ module DeviseTokenAuth::Concerns::User
 
     def generate_api_token
       token = SecureRandom.hex
-      encrypt_api_token(token)
-      self.api_token = token
+      encrypted_token = encrypt_api_token(token)
+      self.api_token = encrypted_token
       self.save!
       return token
     end
 
     def valid_api_token?(api_token)
-      Devise::Encryptor.compare(self.api_token, encrypted_password, password)
+      Devise::Encryptor.compare(self.class, api_token, api_token)
     end
 
     # override devise method to include additional info as opts hash
