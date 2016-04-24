@@ -81,8 +81,11 @@ module DeviseTokenAuth::Concerns::User
 
     def valid_api_token?(api_token)
       token_hash = self.api_token
-      key = "#{token_hash}/#{api_token}"
-      result = (::BCrypt::Password.new(token_hash) == api_token)
+      begin
+        result = (::BCrypt::Password.new(token_hash) == api_token)
+      rescue BCrypt::Errors::InvalidHash
+        return false
+      end
     end
 
     # override devise method to include additional info as opts hash
